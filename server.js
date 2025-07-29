@@ -6,11 +6,10 @@ const admin = require('firebase-admin');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Vérification Token
+// Vérification token
 function checkToken(req, res, next) {
   const token = req.query.token || req.headers['x-access-token'];
   if (!token || token !== process.env.TOKEN_SECRET) {
@@ -19,7 +18,7 @@ function checkToken(req, res, next) {
   next();
 }
 
-// Initialisation Firebase
+// Init Firebase
 try {
   const serviceAccount = {
     type: "service_account",
@@ -40,36 +39,15 @@ try {
 }
 
 // Routes
-let autoFluxActive = false;
-let lastStartTime = null;
-
 app.get('/ping', checkToken, (req, res) => {
   res.json({ status: "OK", message: "AutoFluxCloud Ultra-Sécurisé en ligne" });
 });
 
-app.post('/start', checkToken, (req, res) => {
-  autoFluxActive = true;
-  lastStartTime = new Date();
-  console.log("AutoFlux START");
-  res.json({ status: "OK", message: "AutoFlux démarré" });
+app.get('/', (req, res) => {
+  res.send("AutoFluxCloud Ultra-Sécurisé est en ligne.");
 });
 
-app.post('/stop', checkToken, (req, res) => {
-  autoFluxActive = false;
-  console.log("AutoFlux STOP");
-  res.json({ status: "OK", message: "AutoFlux arrêté" });
-});
-
-app.get('/status', checkToken, (req, res) => {
-  res.json({
-    status: "OK",
-    autoFluxActive,
-    lastStartTime,
-  });
-});
-
-// Démarrage du serveur
+// Lancement du serveur
 app.listen(port, () => {
-  console.log(`AutoFluxCloud Ultra-Sécurisé en ligne sur le port ${port}`);
+  console.log(`AutoFluxCloud Ultra-Sécurisé démarré sur le port ${port}`);
 });
-
