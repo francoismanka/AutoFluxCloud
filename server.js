@@ -40,4 +40,24 @@ try {
 }
 
 // --- Routes ---
-app.get('/ping', checkToken,
+let autoFluxActive = false;
+let lastStartTime = null;
+
+app.get('/ping', checkToken, (req, res) => {
+  res.json({ status: "OK", message: "AutoFluxCloud Ultra-Sécurisé en ligne" });
+});
+
+app.post('/start', checkToken, (req, res) => {
+  autoFluxActive = true;
+  lastStartTime = new Date();
+  console.log("AutoFlux START");
+  res.json({ status: "OK", message: "AutoFlux démarré" });
+});
+
+app.post('/stop', checkToken, (req, res) => {
+  autoFluxActive = false;
+  console.log("AutoFlux STOP");
+  res.json({ status: "OK", message: "AutoFlux arrêté" });
+});
+
+app.get('/status', checkToken, (req,
