@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// --- Vérification Token ---
+// Vérification Token
 function checkToken(req, res, next) {
   const token = req.query.token || req.headers['x-access-token'];
   if (!token || token !== process.env.TOKEN_SECRET) {
@@ -19,7 +19,7 @@ function checkToken(req, res, next) {
   next();
 }
 
-// --- Firebase Init ---
+// Initialisation Firebase
 try {
   const serviceAccount = {
     type: "service_account",
@@ -39,7 +39,7 @@ try {
   console.error("Firebase init error:", error);
 }
 
-// --- Routes ---
+// Routes
 let autoFluxActive = false;
 let lastStartTime = null;
 
@@ -60,4 +60,16 @@ app.post('/stop', checkToken, (req, res) => {
   res.json({ status: "OK", message: "AutoFlux arrêté" });
 });
 
-app.get('/status', checkToken, (req,
+app.get('/status', checkToken, (req, res) => {
+  res.json({
+    status: "OK",
+    autoFluxActive,
+    lastStartTime,
+  });
+});
+
+// Démarrage du serveur
+app.listen(port, () => {
+  console.log(`AutoFluxCloud Ultra-Sécurisé en ligne sur le port ${port}`);
+});
+
